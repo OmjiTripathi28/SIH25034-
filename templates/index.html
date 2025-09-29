@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Internship Recommender</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <div class="header-flex">
+        <div class="header-left">
+          <div class="indian-flag">
+            <img src="india-paper-flag.webp" alt="Indian Flag" class="flag-img" />
+          </div>
+          <div class="gov-india">
+            <span>भारत सरकार / Government Of India</span>
+          </div>
+        </div>
+        <div class="header-right">
+          <span class="lang-icon">&#x1F1EE;&#x1F1F3;</span>
+          <span class="divider">/</span>
+          <span class="lang-select">
+            <button class="lang-select-btn" type="button">
+              <img src="https://img.icons8.com/ios-filled/20/ffffff/language.png" alt="Language" style="vertical-align:middle;"/>
+              Select Language
+              <span class="dropdown-arrow" onclick="document.querySelector('.lang-dropdown').classList.toggle('show')"
+                onmouseover="document.querySelector('.lang-dropdown').classList.add('show')"
+                onmouseout="setTimeout(function(){if(!document.querySelector('.lang-dropdown').matches(':hover'))document.querySelector('.lang-dropdown').classList.remove('show')}, 200)">
+                &#9660;
+              </span>
+            </button>
+            <div class="lang-dropdown">
+              <div data-lang="bn"> Bengali </div>
+              <div data-lang="en"> English </div>
+              <div data-lang="gu"> Gujarati </div>
+              <div data-lang="hi"> Hindi </div>
+              <div data-lang="kn"> Kannada </div>
+              <div data-lang="ml"> Malayalam </div>
+              <div data-lang="mr"> Marathi </div>
+              <div data-lang="or"> Odia </div>
+              <div data-lang="ta"> Tamil </div>
+              <div data-lang="te"> Telugu </div>
+              <div data-lang="ur"> Urdu </div>
+              <div id="google_translate_element" style="margin-top:0.5rem;"></div>
+            </div>
+          <span class="divider">/</span>
+          <span class="screen-reader">Screen Reader <span class="user-icon">&#128101;</span></span>
+          <span class="divider">/</span>
+          <span class="accessibility">
+            <a href="#" class="a-minus">A-</a>
+            <a href="#" class="a-normal">A</a>
+            <a href="#" class="a-plus">A+</a>
+          </span>
+        </div>
+      </div>
+    </header>
+    <nav class="main-nav">
+      <div class="nav-logo">
+        <img src="logo-hi.png" alt="Hindi Logo" class="nav-logo-hi" />
+        <img src="Ministry_of_Corporate_Affairs_India.svg.png" alt="Ministry of Corporate Affairs Logo" />
+        <img src="pm-intern.webp" alt="PM Intern Logo" />
+        <button class="nav-action-btn">Youth Registration</button>
+<div id="youth-modal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <span class="close-modal" id="closeYouthModal">&times;</span>
+    <h2>Youth Registration</h2>
+    <p>Welcome to the Youth Registration portal. Please fill in your details to proceed.</p>
+    <form id="youthForm" autocomplete="off" style="margin-top:22px;">
+      <input type="text" id="phoneInput" name="phone" maxlength="10" pattern="\d{10}" placeholder="Enter your phone number" style="width:90%;padding:10px 12px;border-radius:6px;border:1.5px solid #ccc;font-size:1.1rem;">
+      <button type="submit" style="margin-top:16px;padding:8px 18px;border-radius:6px;background:#ffd700;color:#222;font-weight:600;border:none;cursor:pointer;">Submit</button>
+    </form>
+    <div id="phoneAlert" style="color:#ffd700;font-weight:600;margin-top:12px;display:none;"></div>
+  </div>
+</div>
+          <div id="otp-modal" class="modal" style="display:none;">
+            <div class="modal-content">
+              <span class="close-modal" id="closeOtpModal">&times;</span>
+              <h2>OTP Verification</h2>
+              <p>Please enter the OTP sent to your phone number.</p>
+              <form id="otpForm" autocomplete="off" style="margin-top:22px;">
+                <input type="text" id="otpInput" name="otp" maxlength="6" pattern="\d{6}" placeholder="Enter 6-digit OTP" style="width:90%;padding:10px 12px;border-radius:6px;border:1.5px solid #ccc;font-size:1.1rem;">
+                <button type="submit" style="margin-top:16px;padding:8px 18px;border-radius:6px;background:#ffd700;color:#222;font-weight:600;border:none;cursor:pointer;">Verify OTP</button>
+                <div style="margin-top:14px;text-align:center;">
+                  <span style="color:#fff;">Did not receive yet?</span>
+                  <button type="button" id="resendOtpBtn" style="background:none;border:none;color:#ffd700;font-weight:600;cursor:pointer;text-decoration:underline;margin-left:6px;">Resend OTP</button>
+                </div>
+              </form>
+              <div id="otpAlert" style="color:#ffd700;font-weight:600;margin-top:12px;display:none;"></div>
+            </div>
+          </div>
+  <div id="details-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span class="close-modal" id="closeDetailsModal">&times;</span>
+      <h2>Enter Your Details</h2>
+      <form id="detailsForm" autocomplete="off" style="margin-top:22px;">
+        <div class="details-input-group">
+          <input type="text" name="Username" id="nameInput" placeholder="Full Name" class="details-input">
+        </div>
+        <div class="details-input-group">
+          <input type="password" name="password" id="passwordInput" placeholder="Password" class="details-input">
+          <button type="button" id="togglePassword" class="details-toggle-btn">👁️</button>
+        </div>
+        <div class="details-input-group">
+          <input type="password" name="confirmPassword" id="confirmPasswordInput" placeholder="Confirm Password" class="details-input">
+          <button type="button" id="toggleConfirmPassword" class="details-toggle-btn">👁️</button>
+        </div>
+        <button type="submit" style="margin-top:16px;padding:8px 18px;border-radius:6px;background:#ffd700;color:#222;font-weight:600;border:none;cursor:pointer;">Submit Details</button>
+      </form>
+      <div id="detailsAlert" style="color:#ffd700;font-weight:600;margin-top:12px;display:none;"></div>
+    </div>
+  </div>
+        <button class="nav-action-btn-2">Login</button>
+<div id="login-modal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <span class="close-modal" id="closeLoginModal">&times;</span>
+    <h2>Login</h2>
+    <form id="loginForm" autocomplete="off" style="margin-top:22px;">
+      <div class="details-input-group">
+        <input type="text" name="loginPhone" id="loginPhone" maxlength="10" pattern="\d{10}" placeholder="Phone Number" class="details-input">
+      </div>
+      <div class="details-input-group">
+        <input type="password" name="loginPassword" id="loginPassword" placeholder="Password" class="details-input">
+        <button type="button" id="toggleLoginPassword" class="details-toggle-btn">👁️</button>
+      </div>
+      <button type="submit" style="margin-top:16px;padding:8px 18px;border-radius:6px;background:#ffd700;color:#222;font-weight:600;border:none;cursor:pointer;">Login</button>
+    </form>
+    <div id="loginAlert" style="color:#ffd700;font-weight:600;margin-top:12px;display:none;"></div>
+  </div>
+</div>
+      </div>
+  <div class="nav-menu-container">
+    <div class="nav-item home">Home</div>
+    <div class="nav-item gallery">Gallery</div>
+    <div class="nav-item eligibility">Eligibility</div>
+    <div class="nav-item mobile-app">Mobile APP</div>
+    <div class="nav-item support">Support</div>
+    <div class="nav-item compendium">Compendium</div>
+    <div class="nav-item recommended" id="recommendedBtn">Recommended Internships</div>
+  </div>
+    </nav>
+
+
+    <section class="main-content-section" id="mainContentSection">
+      <div class="internship-notice-section">
+        <marquee class="internship-notice" behavior="scroll" direction="left" scrollamount="7">
+          1. Internship Screening & Selection Ongoing! Check your dashboard, email, and SMS regularly. Confirm joining via the Internship tile on your dashboard. 2. Verify your Aadhaar-seeded bank account status on your dashboard.
+        </marquee>
+      </div>
+      <div class="carousel-section">
+        <div class="carousel-container">
+          <div class="carousel-slide active">
+            <img src="Generated Image September 21, 2025 - 10_26AM.png" alt="Slide 1" />
+          </div>
+          <div class="carousel-slide">
+            <img src="02pmstf.png" alt="Slide 2" />
+          </div>
+          <div class="carousel-slide">
+            <img src="03stfu.png" alt="Slide 3" />
+          </div>
+          <button class="carousel-btn prev" onclick="moveCarousel(-1)">&#10094;</button>
+          <button class="carousel-btn next" onclick="moveCarousel(1)">&#10095;</button>
+        </div>
+      </div>
+    </section>
+    <!-- Recommendation Choice Modal -->
+<div id="recommendChoice" class="modal" style="display:none;">
+  <div class="modal-content card">
+  <span class="close-modal" id="closeRecommendChoice">&times;</span>
+  <h2>Choose Recommendation Method</h2>
+  <button id="resumeBasedBtn" class="choice-btn">Resume Based Recommendation</button>
+  <button id="manualBasedBtn" class="choice-btn">Manual Recommendation</button>
+</div>
+
+</div>
+
+    <section class="recommended-internships-section" id="recommendedSection">
+      <h2>Recommended Internships</h2>
+      <p>Here are your personalized internship recommendations based on your profile and preferences.</p>
+      <div class="skills-expertise">
+        <div class="skills-cards">
+          <div class="skills-card technical-skills">
+            <h4>Technical Skills</h4>
+            <div style="margin-bottom: 1rem; display: flex; gap: 0.5rem;">
+              <input type="text" id="techSkillInput" placeholder="Add a technical skill..." style="flex:1; padding:0.5rem 0.8rem; border-radius:6px; border:1.2px solid #bcd; font-size:1rem;">
+              <button id="addTechSkillBtn" style="padding:0.5rem 1.2rem; border-radius:6px; background:#1a357a; color:#fff; font-weight:500; border:none; cursor:pointer;">Add</button>
+            </div>
+            <div id="techSkillsDisplay" style="margin-top: 0.5rem;"></div>
+          </div>
+          <div class="skills-card soft-skills">
+            <h4>Soft Skills</h4>
+            <ul id="softSkillsList">
+              <li>Communication</li>
+              <li>Teamwork</li>
+              <li>Problem Solving</li>
+              <li>Adaptability</li>
+              <li>Time Management</li>
+              <li>Critical Thinking</li>
+              <li>Leadership</li>
+            </ul>
+          </div>
+          <div class="skills-card location-mode">
+            <h4>Location & Work Mode Preference</h4>
+            <div style="margin-bottom: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <input type="text" id="locationInput" placeholder="Preferred Location" style="flex:1; padding:0.5rem 0.8rem; border-radius:6px; border:1.2px solid #bcd; font-size:1rem;">
+              <select id="workModeSelect" style="flex:1; padding:0.5rem 0.8rem; border-radius:6px; border:1.2px solid #bcd; font-size:1rem;">
+                <option value="">Select Work Mode</option>
+                <option value="Remote">Remote</option>
+                <option value="Hybrid">Hybrid</option>
+                <option value="Onsite">Onsite</option>
+              </select>
+              <button id="saveLocationModeBtn" style="padding:0.5rem 1.2rem; border-radius:6px; background:#1a357a; color:#fff; font-weight:500; border:none; cursor:pointer;">Save</button>
+            </div>
+            <div id="locationModeDisplay" style="margin-top: 0.5rem; color:#222; font-size:1.05rem;"></div>
+          </div>
+          <div class="qualification-card">
+            <h4>Qualifications</h4>
+            <div style="margin-bottom: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <input type="text" id="educationInput" placeholder="Education (e.g. B.Tech, M.Sc)" style="flex:1; padding:0.5rem 0.8rem; border-radius:6px; border:1.2px solid #bcd; font-size:1rem;">
+              <input type="text" id="fieldInput" placeholder="Field of Study (e.g. Computer Science)" style="flex:1; padding:0.5rem 0.8rem; border-radius:6px; border:1.2px solid #bcd; font-size:1rem;">
+              <input type="text" id="cgpaInput" placeholder="CGPA / Percentage" style="flex:1; padding:0.5rem 0.8rem; border-radius:6px; border:1.2px solid #bcd; font-size:1rem;">
+              <button id="saveQualificationBtn" style="padding:0.5rem 1.2rem; border-radius:6px; background:#1a357a; color:#fff; font-weight:500; border:none; cursor:pointer;">Save</button>
+            </div>
+            <div id="qualificationDisplay" style="margin-top: 0.5rem; color:#222; font-size:1.05rem;"></div>
+          </div>
+          <div class="preference-card">
+            <h4>Additional Preferences</h4>
+            <div style="margin-bottom: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <input type="text" id="durationInput" placeholder="Preferred Duration (e.g. 3 months)" style="flex:1; padding:0.5rem 0.8rem; border-radius:6px; border:1.2px solid #bcd; font-size:1rem;">
+              <input type="text" id="stipendInput" placeholder="Stipend Expected (e.g. ₹10000/month)" style="flex:1; padding:0.5rem 0.8rem; border-radius:6px; border:1.2px solid #bcd; font-size:1rem;">
+              <button id="savePreferenceBtn" style="padding:0.5rem 1.2rem; border-radius:6px; background:#1a357a; color:#fff; font-weight:500; border:none; cursor:pointer;">Save</button>
+            </div>
+            <div id="preferenceDisplay" style="margin-top: 0.5rem; color:#222; font-size:1.05rem;"></div>
+          </div>
+        </div>
+        <div style="width:100%;display:flex;justify-content:center;margin-top:2.2rem;">
+          <button id="searchInternshipsBtn" style="padding:0.8rem 2.2rem;border-radius:8px;background:linear-gradient(90deg,#1a357a 60%,#3a7bd5 100%);color:#fff;font-weight:700;font-size:1.15rem;border:none;box-shadow:0 2px 8px rgba(30,50,120,0.10);cursor:pointer;transition:background 0.2s,box-shadow 0.2s;">Search Internships</button>
+        </div>
+        </div>
+      </div>
+      <button id="backToMainBtn" style="margin-top:2rem;padding:8px 18px;border-radius:6px;background:#1a357a;color:#fff;font-weight:600;border:none;cursor:pointer;">Back to Main</button>
+    </section>
+    
+    <section id="resumeSection" class="recommended-internships-section card" style="display:none;">
+  <h2>Upload Resume for Recommendations</h2>
+  <form id="resumeForm" enctype="multipart/form-data">
+      <input type="file" id="resumeFile" accept=".pdf,.doc,.docx" required>
+      <button type="submit">Get Resume-Based Recommendations</button>
+  </form>
+  <div id="resumeResults"></div>
+  <button id="backToMainFromResume" style="margin-top:1rem;">Back to Main</button>
+</section>
+
+
+
+    <!-- Internship Results Section -->
+<section id="internshipResults" class="recommended-internships-section">
+  <h3>Top Internship Recommendations</h3>
+  <!-- For manual form search results -->
+<div id="resultsContainerForm" style="display:none;"></div>
+
+<!-- For resume upload results -->
+<div id="resultsContainerResume" style="display:none;"></div>
+
+</section>
+
+    <script>
+      // Resend OTP logic
+      document.getElementById('resendOtpBtn').addEventListener('click', function() {
+        const phoneInput = document.getElementById('phoneInput');
+        const phone = phoneInput ? phoneInput.value.trim() : '';
+        const otpAlert = document.getElementById('otpAlert');
+        if (phone && /^\d{10}$/.test(phone)) {
+          otpAlert.textContent = 'A new OTP has been sent to ' + phone;
+          otpAlert.style.display = 'block';
+          setTimeout(() => { otpAlert.style.display = 'none'; }, 2500);
+        } else {
+          otpAlert.textContent = 'OTP has been send to your Phone Number.';
+          otpAlert.style.display = 'block';
+          setTimeout(() => { otpAlert.style.display = 'none'; }, 2500);
+        }
+      });
+      // Login Modal logic
+      document.querySelector('.nav-action-btn-2').addEventListener('click', function() {
+        document.getElementById('login-modal').style.display = 'block';
+      });
+      document.getElementById('closeLoginModal').addEventListener('click', function() {
+        document.getElementById('login-modal').style.display = 'none';
+      });
+      window.addEventListener('click', function(event) {
+        const loginModal = document.getElementById('login-modal');
+        if (event.target === loginModal) {
+          loginModal.style.display = 'none';
+        }
+      });
+      document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const phone = document.getElementById('loginPhone').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        const loginAlert = document.getElementById('loginAlert');
+        if (!/^\d{10}$/.test(phone)) {
+          loginAlert.textContent = 'Please enter your 10-digit phone number.';
+          loginAlert.style.display = 'block';
+        } else if (!password) {
+          loginAlert.textContent = 'Please enter your password.';
+          loginAlert.style.display = 'block';
+        } else {
+          loginAlert.textContent = 'Login successful!';
+          loginAlert.style.display = 'none';
+          document.getElementById('login-modal').style.display = 'none';
+        }
+      });
+      // Login password view/hide toggle
+      document.getElementById('toggleLoginPassword').addEventListener('click', function() {
+        const pwd = document.getElementById('loginPassword');
+        if (pwd.type === 'password') {
+          pwd.type = 'text';
+          this.textContent = '🙈';
+        } else {
+          pwd.type = 'password';
+          this.textContent = '👁️';
+        }
+      });
+      // Password view/hide toggle
+      document.getElementById('togglePassword').addEventListener('click', function() {
+        const pwd = document.getElementById('passwordInput');
+        if (pwd.type === 'password') {
+          pwd.type = 'text';
+          this.textContent = '🙈';
+        } else {
+          pwd.type = 'password';
+          this.textContent = '👁️';
+        }
+      });
+      document.getElementById('toggleConfirmPassword').addEventListener('click', function() {
+        const cpwd = document.getElementById('confirmPasswordInput');
+        if (cpwd.type === 'password') {
+          cpwd.type = 'text';
+          this.textContent = '🙈';
+        } else {
+          cpwd.type = 'password';
+          this.textContent = '👁️';
+        }
+      });
+      // Phone number validation for Youth Registration
+        document.getElementById('youthForm').addEventListener('submit', function(e) {
+          e.preventDefault();
+          const phoneInput = document.getElementById('phoneInput');
+          const phoneAlert = document.getElementById('phoneAlert');
+          const phone = phoneInput.value.trim();
+          if (!/^\d{10}$/.test(phone)) {
+            phoneAlert.textContent = 'Please enter a valid 10-digit phone number.';
+            phoneAlert.style.display = 'block';
+          } else {
+            phoneAlert.style.display = 'none';
+            phoneInput.value = '';
+            document.getElementById('youth-modal').style.display = 'none';
+            document.getElementById('otp-modal').style.display = 'block';
+          }
+        });
+
+        // OTP Modal logic
+        document.getElementById('closeOtpModal').addEventListener('click', function() {
+          document.getElementById('otp-modal').style.display = 'none';
+        });
+        window.addEventListener('click', function(event) {
+          const otpModal = document.getElementById('otp-modal');
+          if (event.target === otpModal) {
+            otpModal.style.display = 'none';
+          }
+        });
+
+          document.getElementById('otpForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const otpInput = document.getElementById('otpInput');
+            const otpAlert = document.getElementById('otpAlert');
+            const otp = otpInput.value.trim();
+            if (!/^\d{6}$/.test(otp)) {
+              otpAlert.textContent = 'Please enter a valid 6-digit OTP.';
+              otpAlert.style.display = 'block';
+            } else {
+              otpAlert.style.display = 'none';
+              otpInput.value = '';
+              otpAlert.textContent = 'OTP verified successfully!';
+              otpAlert.style.display = 'block';
+              setTimeout(() => {
+                otpAlert.style.display = 'none';
+                document.getElementById('otp-modal').style.display = 'none';
+                document.getElementById('details-modal').style.display = 'block';
+              }, 1200);
+            }
+          });
+
+          // Details Modal logic
+          document.getElementById('closeDetailsModal').addEventListener('click', function() {
+            document.getElementById('details-modal').style.display = 'none';
+          });
+          window.addEventListener('click', function(event) {
+            const detailsModal = document.getElementById('details-modal');
+            if (event.target === detailsModal) {
+              detailsModal.style.display = 'none';
+            }
+          });
+
+          document.getElementById('detailsForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('nameInput').value.trim();
+            const password = document.getElementById('passwordInput').value;
+            const confirmPassword = document.getElementById('confirmPasswordInput').value;
+            const detailsAlert = document.getElementById('detailsAlert');
+            if (!name || !password || !confirmPassword) {
+              detailsAlert.textContent = 'Please fill in all details.';
+              detailsAlert.style.display = 'block';
+            } else if (password.length < 6) {
+              detailsAlert.textContent = 'Password must be at least 6 characters.';
+              detailsAlert.style.display = 'block';
+            } else if (password !== confirmPassword) {
+              detailsAlert.textContent = 'Passwords do not match.';
+              detailsAlert.style.display = 'block';
+            } else {
+              detailsAlert.textContent = 'Details submitted successfully!';
+              detailsAlert.style.display = 'none';
+              document.getElementById('details-modal').style.display = 'none';
+            }
+          });
+      // Youth Registration Modal logic
+      document.querySelector('.nav-action-btn').addEventListener('click', function() {
+        document.getElementById('youth-modal').style.display = 'block';
+      });
+      document.getElementById('closeYouthModal').addEventListener('click', function() {
+        document.getElementById('youth-modal').style.display = 'none';
+      });
+      window.addEventListener('click', function(event) {
+        const modal = document.getElementById('youth-modal');
+        if (event.target === modal) {
+          modal.style.display = 'none';
+        }
+      });
+      let currentSlide = 0;
+      function showSlide(idx) {
+        const slides = document.querySelectorAll('.carousel-slide');
+        slides.forEach((slide, i) => {
+          slide.classList.toggle('active', i === idx);
+        });
+      }
+      function moveCarousel(dir) {
+        const slides = document.querySelectorAll('.carousel-slide');
+        currentSlide = (currentSlide + dir + slides.length) % slides.length;
+        showSlide(currentSlide);
+      }
+      document.addEventListener('DOMContentLoaded', () => {
+  showSlide(currentSlide);
+  setInterval(() => moveCarousel(1), 6000);
+      });
+    // Recommended Internships section logic
+    document.getElementById('recommendedBtn').addEventListener('click', function() {
+  document.getElementById('recommendChoice').style.display = 'block';
+});
+
+document.getElementById('closeRecommendChoice').addEventListener('click', function() {
+  document.getElementById('recommendChoice').style.display = 'none';
+});
+
+document.getElementById('resumeBasedBtn').addEventListener('click', function() {
+  document.getElementById('recommendChoice').style.display = 'none';
+  openResumeUpload();
+});
+
+document.getElementById('manualBasedBtn').addEventListener('click', function() {
+  document.getElementById('recommendChoice').style.display = 'none';
+  document.getElementById('mainContentSection').style.display = 'none';
+  document.getElementById('recommendedSection').style.display = 'block';
+});
+
+    document.getElementById('backToMainBtn').addEventListener('click', function() {
+      document.getElementById('recommendedSection').style.display = 'none';
+      document.getElementById('mainContentSection').style.display = 'block';
+    });
+    document.querySelector('.nav-item.home').addEventListener('click', function() {
+      document.getElementById('recommendedSection').style.display = 'none';
+      document.getElementById('mainContentSection').style.display = 'block';
+    });
+
+    // Technical Skills user input logic with persistent storage
+    let techSkillsArr = [];
+    function loadTechSkills() {
+      const stored = localStorage.getItem('techSkillsArr');
+      if (stored) {
+        try {
+          techSkillsArr = JSON.parse(stored);
+        } catch (e) {
+          techSkillsArr = [];
+        }
+      }
+    }
+    function saveTechSkills() {
+      localStorage.setItem('techSkillsArr', JSON.stringify(techSkillsArr));
+    }
+    function renderTechSkills() {
+      const display = document.getElementById('techSkillsDisplay');
+      if (techSkillsArr.length === 0) {
+        display.innerHTML = '<span style="color:#888;font-size:0.98rem;">No skills added yet.</span>';
+        return;
+      }
+      display.innerHTML = '<ul style="list-style:none;padding:0;margin:0;">' +
+        techSkillsArr.map((skill, idx) => `<li style='font-size:1.05rem;color:#222;background:#f2f7ff;border-radius:6px;margin-bottom:0.5rem;padding:0.5rem 1rem;box-shadow:0 1px 4px rgba(30,50,120,0.04);display:flex;align-items:center;justify-content:space-between;'>${skill}<button class="remove-skill-btn" data-idx="${idx}" style="margin-left:12px;background:#e74c3c;color:#fff;border:none;border-radius:4px;padding:2px 10px;font-size:0.95rem;cursor:pointer;">Remove</button></li>`).join('') + '</ul>';
+      // Add event listeners for remove buttons
+      Array.from(document.getElementsByClassName('remove-skill-btn')).forEach(btn => {
+        btn.onclick = function() {
+          const idx = parseInt(this.getAttribute('data-idx'));
+          techSkillsArr.splice(idx, 1);
+          saveTechSkills();
+          renderTechSkills();
+        };
+      });
+    }
+    document.getElementById('addTechSkillBtn').addEventListener('click', function() {
+      const input = document.getElementById('techSkillInput');
+      const value = input.value.trim();
+      if (value) {
+        techSkillsArr.push(value);
+        saveTechSkills();
+        renderTechSkills();
+        input.value = '';
+      }
+    });
+    document.getElementById('techSkillInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        document.getElementById('addTechSkillBtn').click();
+      }
+    });
+    loadTechSkills();
+    renderTechSkills();
+
+    // Soft Skills selection logic
+    const softSkillsList = document.getElementById('softSkillsList');
+    softSkillsList.querySelectorAll('li').forEach((li) => {
+      li.style.cursor = 'pointer';
+      li.addEventListener('click', function() {
+        li.classList.toggle('selected-soft-skill');
+      });
+    });
+
+    // Location & Work Mode Preference logic
+    const locationInput = document.getElementById('locationInput');
+    const workModeSelect = document.getElementById('workModeSelect');
+    const saveLocationModeBtn = document.getElementById('saveLocationModeBtn');
+    const locationModeDisplay = document.getElementById('locationModeDisplay');
+
+    function loadLocationMode() {
+      const stored = localStorage.getItem('locationModePref');
+      if (stored) {
+        try {
+          const obj = JSON.parse(stored);
+          if (obj.location) locationInput.value = obj.location;
+          if (obj.workMode) workModeSelect.value = obj.workMode;
+          renderLocationMode(obj.location, obj.workMode);
+        } catch (e) {}
+      }
+    }
+    function renderLocationMode(location, workMode) {
+      if (!location && !workMode) {
+        locationModeDisplay.innerHTML = '<span style="color:#888;">No preference saved yet.</span>';
+        return;
+      }
+      locationModeDisplay.innerHTML = `<strong>Location:</strong> ${location || '-'}<br><strong>Work Mode:</strong> ${workMode || '-'}`;
+    }
+    saveLocationModeBtn.addEventListener('click', function() {
+      const location = locationInput.value.trim();
+      const workMode = workModeSelect.value;
+      localStorage.setItem('locationModePref', JSON.stringify({ location, workMode }));
+      renderLocationMode(location, workMode);
+    });
+    loadLocationMode();
+
+    // Qualifications logic
+    const educationInput = document.getElementById('educationInput');
+    const fieldInput = document.getElementById('fieldInput');
+    const cgpaInput = document.getElementById('cgpaInput');
+    const saveQualificationBtn = document.getElementById('saveQualificationBtn');
+    const qualificationDisplay = document.getElementById('qualificationDisplay');
+
+    function loadQualification() {
+      const stored = localStorage.getItem('qualificationInfo');
+      if (stored) {
+        try {
+          const obj = JSON.parse(stored);
+          if (obj.education) educationInput.value = obj.education;
+          if (obj.field) fieldInput.value = obj.field;
+          if (obj.cgpa) cgpaInput.value = obj.cgpa;
+          renderQualification(obj.education, obj.field, obj.cgpa);
+        } catch (e) {}
+      }
+    }
+    function renderQualification(education, field, cgpa) {
+      if (!education && !field && !cgpa) {
+        qualificationDisplay.innerHTML = '<span style="color:#888;">No qualification info saved yet.</span>';
+        return;
+      }
+      qualificationDisplay.innerHTML = `<strong>Education:</strong> ${education || '-'}<br><strong>Field of Study:</strong> ${field || '-'}<br><strong>CGPA / Percentage:</strong> ${cgpa || '-'}`;
+    }
+    saveQualificationBtn.addEventListener('click', function() {
+      const education = educationInput.value.trim();
+      const field = fieldInput.value.trim();
+      const cgpa = cgpaInput.value.trim();
+      localStorage.setItem('qualificationInfo', JSON.stringify({ education, field, cgpa }));
+      renderQualification(education, field, cgpa);
+    });
+    loadQualification();
+
+    // Additional Preferences logic
+    const durationInput = document.getElementById('durationInput');
+    const stipendInput = document.getElementById('stipendInput');
+    const savePreferenceBtn = document.getElementById('savePreferenceBtn');
+    const preferenceDisplay = document.getElementById('preferenceDisplay');
+
+    function loadPreference() {
+      const stored = localStorage.getItem('additionalPreference');
+      if (stored) {
+        try {
+          const obj = JSON.parse(stored);
+          if (obj.duration) durationInput.value = obj.duration;
+          if (obj.stipend) stipendInput.value = obj.stipend;
+          renderPreference(obj.duration, obj.stipend);
+        } catch (e) {}
+      }
+    }
+    function renderPreference(duration, stipend) {
+      if (!duration && !stipend) {
+        preferenceDisplay.innerHTML = '<span style="color:#888;">No additional preferences saved yet.</span>';
+        return;
+      }
+      preferenceDisplay.innerHTML = `<strong>Preferred Duration:</strong> ${duration || '-'}<br><strong>Stipend Expected:</strong> ${stipend || '-'}`;
+    }
+    savePreferenceBtn.addEventListener('click', function() {
+      const duration = durationInput.value.trim();
+      const stipend = stipendInput.value.trim();
+      localStorage.setItem('additionalPreference', JSON.stringify({ duration, stipend }));
+      renderPreference(duration, stipend);
+    });
+    loadPreference();
+    </script>
+    <script>
+      // Open dropdown when lang-select-btn is clicked
+      document.querySelector('.lang-select-btn').addEventListener('click', function(e) {
+        e.stopPropagation();
+        document.querySelector('.lang-dropdown').classList.toggle('show');
+      });
+      // Close dropdown if clicked outside
+      document.addEventListener('click', function(e) {
+        const dropdown = document.querySelector('.lang-dropdown');
+        const btn = document.querySelector('.lang-select-btn');
+        if (!dropdown || !btn) return;
+        if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
+          dropdown.classList.remove('show');
+        }
+      });
+
+      // Google Translate language switching logic
+      document.querySelectorAll('.lang-dropdown div[data-lang]').forEach(function(div) {
+        div.addEventListener('click', function() {
+          var lang = this.getAttribute('data-lang');
+          var select = document.querySelector('select.goog-te-combo');
+          if (select) {
+            select.value = lang;
+            select.dispatchEvent(new Event('change'));
+          }
+        });
+      });
+    </script>
+    <script>
+/* ----------------------------
+   FORM SEARCH (manual filters)
+----------------------------- */
+document.getElementById("searchInternshipsBtn").addEventListener("click", async function () {
+  const data = {
+    skills: techSkillsArr,
+    location: document.getElementById("locationInput").value,
+    work_mode: document.getElementById("workModeSelect").value,
+    education: document.getElementById("educationInput").value,
+    field_of_study: document.getElementById("fieldInput").value,
+    cgpa: document.getElementById("cgpaInput").value,
+    duration: document.getElementById("durationInput").value,
+    stipend: document.getElementById("stipendInput").value
+  };
+
+  const resultsContainerForm = document.getElementById("resultsContainerForm");
+  const resultsContainerResume = document.getElementById("resultsContainerResume");
+
+  // Hide resume results, show form results
+  resultsContainerResume.style.display = "none";
+  resultsContainerForm.style.display = "block";
+
+  resultsContainerForm.innerHTML = "<p>🔎 Searching internships...</p>";
+  document.getElementById("internshipResults").style.display = "block";
+
+  try {
+    const response = await fetch("http://127.0.0.1:5000/recommend", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+
+    const result = await response.json();
+    const internships = result.internships || [];
+
+    resultsContainerForm.innerHTML = "";
+
+    if (internships.length === 0) {
+      resultsContainerForm.innerHTML = "<p>No internships found for your preferences.</p>";
+      return;
+    }
+
+    internships.forEach(intern => {
+      const card = document.createElement("div");
+      card.className = "internship-card";
+      card.innerHTML = `
+        <div class="card-header">
+          <h4>${intern.title}</h4>
+          <span class="score">${(intern.score * 100).toFixed(2)}% match</span>
+        </div>
+        <p><strong>Company:</strong> ${intern.company}</p>
+        <p><strong>Location:</strong> ${intern.location}</p>
+        <p><strong>Duration:</strong> ${intern.duration || "Not specified"}</p>
+        <p><strong>Stipend:</strong> ${intern.stipend}</p>
+        <p><strong>Skills Required:</strong> ${intern.skills ? intern.skills.join(", ") : "Not specified"}</p>
+        <button class="apply-btn">Apply Now</button>
+      `;
+      resultsContainerForm.appendChild(card);
+    });
+
+  } catch (err) {
+    console.error("Fetch error:", err);
+    resultsContainerForm.innerHTML = "<p style='color:red;'>❌ Failed to fetch results.</p>";
+  }
+});
+
+/* ----------------------------
+   RESUME UPLOAD
+----------------------------- */
+function openResumeUpload() {
+  document.getElementById('mainContentSection').style.display = 'none';
+  document.getElementById('resumeSection').style.display = 'block';
+  // Always reset results visibility
+  document.getElementById('internshipResults').style.display = 'block';
+}
+
+document.getElementById('backToMainFromResume').addEventListener('click', function() {
+  document.getElementById('resumeSection').style.display = 'none';
+  document.getElementById('mainContentSection').style.display = 'block';
+});
+
+document.getElementById('resumeForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const fileInput = document.getElementById('resumeFile');
+  if (!fileInput.files.length) return;
+
+  const formData = new FormData();
+  formData.append("resume", fileInput.files[0]);
+
+  const resultsContainerResume = document.getElementById("resultsContainerResume");
+  const resultsContainerForm = document.getElementById("resultsContainerForm");
+
+  // Hide form results, show resume results
+  resultsContainerForm.style.display = "none";
+  resultsContainerResume.style.display = "block";
+
+  resultsContainerResume.innerHTML = "<p>📄 Analyzing your resume...</p>";
+  document.getElementById("internshipResults").style.display = "block";
+
+  try {
+    const response = await fetch("http://127.0.0.1:5000/recommend_resume", {
+      method: "POST",
+      body: formData
+    });
+
+    const result = await response.json();
+    const internships = result.internships || [];
+
+    resultsContainerResume.innerHTML = "";
+
+    if (internships.length === 0) {
+      resultsContainerResume.innerHTML = "<p>No internships found based on resume.</p>";
+      return;
+    }
+
+    internships.forEach(intern => {
+      const card = document.createElement("div");
+      card.className = "internship-card";
+      card.innerHTML = `
+        <div class="card-header">
+          <h4>${intern.title}</h4>
+          <span class="score">${(intern.score * 100).toFixed(2)}% match</span>
+        </div>
+        <p><strong>Company:</strong> ${intern.company}</p>
+        <p><strong>Location:</strong> ${intern.location}</p>
+        <p><strong>Duration:</strong> ${intern.duration || "Not specified"}</p>
+        <p><strong>Stipend:</strong> ${intern.stipend}</p>
+        <p><strong>Skills Required:</strong> ${intern.skills ? intern.skills.join(", ") : "Not specified"}</p>
+        <button class="apply-btn">Apply Now</button>
+      `;
+      resultsContainerResume.appendChild(card);
+    });
+
+  } catch (err) {
+    console.error("Fetch error:", err);
+    resultsContainerResume.innerHTML = "<p style='color:red;'>❌ Failed to fetch resume-based results.</p>";
+  }
+});
+</script>
+
+
+  </body>
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement(
+        { pageLanguage: 'en', includedLanguages: 'en,hi,bn,gu,kn,ml,mr,or,ta,te,ur' },
+        'google_translate_element'
+      );
+    }
+  </script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</html>
