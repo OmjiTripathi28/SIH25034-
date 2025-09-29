@@ -695,11 +695,11 @@ document.getElementById("searchInternshipsBtn").addEventListener("click", async 
   document.getElementById("internshipResults").style.display = "block";
 
   try {
-    const response = await fetch("http://127.0.0.1:5000/recommend", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    });
+    const response = await fetch("https://sih25034-team-aether.onrender.com/recommend_manual", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(data)
+});
 
     const result = await response.json();
     const internships = result.internships || [];
@@ -769,10 +769,12 @@ document.getElementById('resumeForm').addEventListener('submit', async function(
   document.getElementById("internshipResults").style.display = "block";
 
   try {
-    const response = await fetch("http://127.0.0.1:5000/recommend_resume", {
-      method: "POST",
-      body: formData
-    });
+    // Resume way
+const response = await fetch("https://sih25034-team-aether.onrender.com/recommend_resume", {
+  method: "POST",
+  body: formData
+});
+
 
     const result = await response.json();
     const internships = result.internships || [];
@@ -820,4 +822,5 @@ document.getElementById('resumeForm').addEventListener('submit', async function(
     }
   </script>
   <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
 </html>
